@@ -5,8 +5,9 @@
   <script src="https://www.puck-js.com/puck.js"></script>
   <script>
     function getData() {
-      Puck.eval('records', function(data) { 
-        document.write(data.join('<br/>')); 
+     document.write("records<br/>"));
+      Puck.eval('records', function(records) { 
+        document.write(records.join('<br/>')); 
       });
     }
   </script>
