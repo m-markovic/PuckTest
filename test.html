@@ -4,13 +4,13 @@
  <body>
   <script src="https://www.puck-js.com/puck.js"></script>
   <script>
-    function getData() {
+    function getRecords() {
      document.write("records<br/>");
       Puck.eval('records', function(records) { 
         document.write(records.join('<br/>')); 
       });
     }
   </script>
-  <button onclick="getData();">Get Data</button>
+  <button onclick="getRecords();">Get Data</button>
  </body>
 </html>
