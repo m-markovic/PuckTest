@@ -3,7 +3,13 @@
  </head>
  <body>
   <script src="https://www.puck-js.com/puck.js"></script>
-  <button onclick="Puck.write('LED1.set();\n');">On!</button>
-  <button onclick="Puck.write('LED1.reset();\n');">Off!</button>
+  <script>
+    function getData() {
+      Puck.eval('data', function(data) { 
+        document.write(data.join('<br/>')); 
+      });
+    }
+  </script>
+  <button onclick="getData();">Get Data</button>
  </body>
 </html>
