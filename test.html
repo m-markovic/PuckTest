@@ -6,7 +6,7 @@
   <script>
     function getRecords() {
      document.write("records<br/>");
-      Puck.eval('Puck.getData()', function(records) { 
+      Puck.eval('getData()', function(records) { 
         document.write(records.join('<br/>')); 
       });
     }
