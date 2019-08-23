@@ -1,16 +1,265 @@
+<!DOCTYPE html>
 <html>
- <head>
- </head>
- <body>
-  <script src="https://www.puck-js.com/puck.js"></script>
-  <script>
-    function getRecords() {
-     document.write("records<br/>");
+<head> 
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!-- Bootstrap core CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Design Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.8/css/mdb.min.css" rel="stylesheet">
+
+<!-- JQuery -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.8/js/mdb.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.js"></script>
+
+</head>
+<body>
+
+<h2 style="text-align:center">Overall Assessment: <span id="assessment"><span></h2>
+
+<div id="main"></div>
+
+//code to get data from puck
+<script>
+ function getRecords() {
+     
       Puck.eval('getData()', function(records) { 
-        document.write(records); 
+        processRecords(jsonRecords);
       });
     }
-  </script>
-  <button onclick="getRecords();">Get Data</button>
- </body>
+</script>
+
+//create visualisations
+<script> 
+
+var records = [
+  {
+    state: "outside",
+    timeStart: "Thu Aug 22 2019 19:01:14 GMT+0100",
+    timeEnd: "Thu Aug 22 2019 19:01:30 GMT+0100",
+    assessment: "ok",
+    data: [{y:17, t:"Thu Aug 22 2019 19:01:14 GMT+0100" }, {y:13, t:"Thu Aug 22 2019 19:01:15 GMT+0100" }, {y:15, t:"Thu Aug 22 2019 19:01:16 GMT+0100" }]
+   },
+  {
+    state: "fridge",
+    timeStart: "Thu Aug 22 2019 19:01:30 GMT+0100",
+    timeEnd: "Thu Aug 22 2019 19:01:46 GMT+0100",
+    assessment: "not ok",
+     data: [{y:17, t:"Thu Aug 22 2019 19:01:14 GMT+0100" }, {y:13, t:"Thu Aug 22 2019 19:01:15 GMT+0100" }, {y:15, t:"Thu Aug 22 2019 19:01:16 GMT+0100" }]
+   },
+  {
+    state: "outside",
+    timeStart: "Thu Aug 22 2019 19:01:46 GMT+0100",
+    timeEnd: "Thu Aug 22 2019 19:01:54 GMT+0100",
+    assessment: "ok",
+    data: [{y:17, t:"Thu Aug 22 2019 19:01:14 GMT+0100" }, {y:13, t:"Thu Aug 22 2019 19:01:15 GMT+0100" }, {y:15, t:"Thu Aug 22 2019 19:01:16 GMT+0100" }]
+   },
+  {
+    state: "fridge",
+    timeStart: "Thu Aug 22 2019 19:01:54 GMT+0100",
+    timeEnd: "Thu Aug 22 2019 19:01:58 GMT+0100",
+    assessment: "not ok",
+    data: [{y:17, t:"Thu Aug 22 2019 19:01:14 GMT+0100" }, {y:13, t:"Thu Aug 22 2019 19:01:15 GMT+0100" }, {y:15, t:"Thu Aug 22 2019 19:01:16 GMT+0100" }]
+   }
+ ];
+ 
+// var jsonRecords = JSON.stringify(records);
+
+//setTimeout (processRecords(jsonRecords),1000);
+ 
+function toHHMMSS  (sec_num) {
+   
+    let hours   = Math.floor(sec_num / 3600);
+    let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    let seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    return hours+':'+minutes+':'+seconds;
+}
+
+
+function addChart (containerID, records) {
+
+
+times = [];
+for (i =0;i<records.length;i++){
+  times.push(records[i].t);
+}
+
+console.log(times);
+
+		let ctx = document.getElementById(containerID).getContext('2d');
+		ctx.height = 200;
+		ctx.width = 200;
+let myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+       labels: times,
+    datasets: [{
+            label: 'temperature',
+            data: records,
+            borderWidth: 1
+        }]
+    },
+    options: {
+     maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }
+            
+            ], 
+            
+             xAxes: [{ type: 'time', distribution: 'linear' }] 
+            
+        }, 
+        annotation: {
+      annotations: [{
+        type: 'line',
+        mode: 'horizontal',
+        scaleID: 'y-axis-0',
+        value: 5,
+        borderColor: 'rgb(75, 192, 192)',
+        borderWidth: 4,
+        label: {
+          enabled: true,
+          content: 'Maximum temperature for cold storage'
+        }
+      }]}
+    }
+});
+
+	
+
+		
+	
+
+}
+
+ 
+ function processRecords (data) {
+ 
+ let overalAssessment = true; 
+ 
+ let recordsArray = JSON.parse(data);
+  console.log (recordsArray);
+  
+ let= explanationText = "no explanation";
+  
+  let html = "";
+  
+  
+  for (i=0;i< recordsArray.length;i++) {
+  
+  let chartHTML= "";
+  
+   let assesmentResult = "assessemnt missing";
+  
+  if (recordsArray[i].assessment ==="ok") {
+  assesmentResult = '<span style="color:green">OK</span>'
+  
+    if (recordsArray[i].state=="outside") {
+      explanationText = "Time allowed for the item to be outside a cooling facility has not been exceeded and the observed ambient temperature has not exceeded X";
+    }
+    
+    if (recordsArray[i].state=="fridge") {
+      explanationText = "The observed fridge temperature has not exceeded X in Y consecutive readings";
+    }
+  
+  }
+  
+  if (recordsArray[i].assessment ==="not ok") {
+   overalAssessment = false;
+   assesmentResult = '<span style="color:red">NOT OK</span>'
+   
+   if (recordsArray[i].state=="outside") {
+      explanationText = "Time allowed for the item to be outside a cooling facility has been exceeded or the observed ambient temperature has exceeded X";
+    }
+    
+    if (recordsArray[i].state=="fridge") {
+      explanationText = "The observed fridge temperature has exceeded X in at least Y consecutive readings";
+    }
+   
+   
+   ///include chart as well
+    chartHTML = `<canvas id="chart${i}" style="height:470px; " ></canvas>`;
+   
+  }
+  
+  let date = Date.parse(recordsArray[i].timeEnd) - Date.parse(recordsArray[i].timeStart);
+  console.log (explanationText);
+  html = html + `
+  <div class="accordion" id="accordionExample">
+  <div class="card z-depth-0 bordered">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse${i}"
+          aria-expanded="true" aria-controls="collapse${i}">
+          Stage:  ${recordsArray[i].state} <br>
+          Start:  ${recordsArray[i].timeStart}  <br>
+          Duration:  ${toHHMMSS(date/1000)} <br>
+        </button>
+        
+        <p style="float:right"> Assesment
+        <br>
+        
+        ${assesmentResult}
+        </p>
+      </h5>
+    </div>
+    <div id="collapse${i}" class="collapse" aria-labelledby="headingOne"
+      data-parent="#accordionExample">
+      <div class="card-body" style="max-height:400px;"  >
+       ${explanationText}
+     ${chartHTML}
+     
+      </div>
+    </div>
+  </div>
+</div>
+  `;
+
+
+
+  }
+
+ let assessemntElement = document.getElementById("assessment")
+ 
+ if (overalAssessment) {
+ assessemntElement.innerHTML= "COMPLIANT";
+ }
+ else {
+ assessemntElement.innerHTML= "NOT COMPLIANT";
+ }
+  
+ 
+ document.getElementById("main").innerHTML= html;
+ for (i=0;i< recordsArray.length;i++) {
+ if (recordsArray[i].assessment ==="not ok") {
+ addChart (`chart${i}`,recordsArray[i].data);  
+  }
+ }
+ 
+
+ }
+ 
+ 
+</script>
+
+<button onclick="getRecords();">Get Data</button>
+
+</body>
 </html>
