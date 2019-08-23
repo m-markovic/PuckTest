@@ -20,7 +20,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.js"></script>
-
+ <script src="https://www.puck-js.com/puck.js"></script>
 </head>
 <body>
 
@@ -28,8 +28,9 @@
 
 <div id="main"></div>
 
-//code to get data from puck
+
 <script>
+	//code to get data from puck
  function getRecords() {
      
       Puck.eval('getData()', function(records) { 
@@ -38,9 +39,9 @@
     }
 </script>
 
-//create visualisations
-<script> 
 
+<script> 
+//create visualisations
 var records = [
   {
     state: "outside",
